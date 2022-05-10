@@ -241,8 +241,15 @@ public class CameraFilmstripDataAdapter implements LocalFilmstripDataAdapter {
 
     @Override
     public void updateItemAt(final int pos, FilmstripItem item) {
+        final Uri uri = item.getData().getUri();
+        int oldPos = findByContentUri(uri);
         mFilmstripItems.set(pos, item);
         updateMetadataAt(pos, true /* forceItemUpdate */);
+
+        if ((oldPos != -1) && (oldPos != pos)) {
+            Log.v(TAG, "found duplicate data: " + uri);
+            removeAt(oldPos);
+        }
     }
 
     private void insertItem(FilmstripItem item) {
@@ -350,7 +357,7 @@ public class CameraFilmstripDataAdapter implements LocalFilmstripDataAdapter {
             // We may add data that is already present, but if we do, it will be deduped in addOrUpdate.
             // addOrUpdate does not dedupe session items, so we ignore them here
             for (FilmstripItem filmstripItem : newPhotoData) {
-                Uri sessionUri = Storage.getSessionUriFromContentUri(
+                Uri sessionUri = Storage.instance().getSessionUriFromContentUri(
                       filmstripItem.getData().getUri());
                 if (sessionUri == null) {
                     addOrUpdate(filmstripItem);
