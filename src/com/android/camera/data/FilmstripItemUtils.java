@@ -24,6 +24,7 @@ import android.media.MediaMetadataRetriever;
 
 import com.android.camera.debug.Log;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 import javax.microedition.khronos.opengles.GL11;
@@ -95,9 +96,9 @@ public class FilmstripItemUtils {
         byte[] decodeBuffer = new byte[32 * 1024];
 
         if (orientation % 180 != 0) {
-            int dummy = imageHeight;
+            int temp = imageHeight;
             imageHeight = imageWidth;
-            imageWidth = dummy;
+            imageWidth = temp;
         }
 
         // Generate Bitmap of maximum size that fits into widthBound x heightBound.
@@ -174,7 +175,11 @@ public class FilmstripItemUtils {
         } catch (IllegalArgumentException e) {
             Log.e(TAG, "MediaMetadataRetriever.setDataSource() fail:" + e.getMessage());
         }
-        retriever.release();
+        try {
+            retriever.release();
+        } catch (IOException e) {
+            // We ignore errors occurred while releasing the MediaMetadataRetriever.
+        }
         return bitmap;
     }
 }
