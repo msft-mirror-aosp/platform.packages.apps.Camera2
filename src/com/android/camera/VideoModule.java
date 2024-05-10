@@ -858,7 +858,7 @@ public class VideoModule extends CameraModule
         intentFilter.addAction(Intent.ACTION_MEDIA_SCANNER_STARTED);
         intentFilter.addDataScheme("file");
         mReceiver = new MyBroadcastReceiver();
-        mActivity.registerReceiver(mReceiver, intentFilter);
+        mActivity.registerReceiver(mReceiver, intentFilter, Context.RECEIVER_EXPORTED);
     }
 
     private void setDisplayOrientation() {
@@ -1509,7 +1509,7 @@ public class VideoModule extends CameraModule
                     // if no file save is needed, we can show the post capture UI now
                     showCaptureResult();
                 }
-                if (mVideoFileDescriptor != null) {
+                if ((mVideoFileDescriptor != null) && (mCurrentVideoValues != null)) {
                     saveVideo();
                 }
             }
