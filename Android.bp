@@ -59,4 +59,5 @@ android_app {
         "libjni_tinyplanet",
         "libjni_jpegutil",
     ],
+    use_embedded_native_libs: true,
 }
